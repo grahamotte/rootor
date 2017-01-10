@@ -4,6 +4,10 @@ class Torrent
   def initialize(data, queries)
     @data = data
     @queries = queries
+    serialize.each do |k, v|
+      self.instance_variable_set "@#{k.to_s}", v
+      self.class.__send__(:attr_accessor, k)
+    end
   end
 
   def serialize
@@ -21,12 +25,10 @@ class Torrent
 
   def mutate(kase, data)
     case kase
-    when :file
-      Filesize.from("#{data} B").pretty
-    when :rate
-      "#{Filesize.from("#{data} B").pretty}/s"
+    when :file, :rate
+      Filesize.from("#{data} B")
     when :date
-      Time.at(data).to_s
+      Time.at(data)
     when :ratio
       data.to_f/1000
     when :bool

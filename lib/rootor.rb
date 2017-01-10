@@ -4,7 +4,7 @@ require_relative 'client'
 require_relative 'torrent'
 
 class Rootor
-  attr_accessor :client
+  attr_accessor :client, :torrents
 
   QUERIES = {
     id:                 { call: 'hash', kind: :str },
@@ -33,22 +33,20 @@ class Rootor
     @torrents = @client.fetch(@queries)
   end
 
-  def torrents
+  def serialized_torrents
     serialize(@torrents)
   end
 
   def find(str)
     return [] unless str.instance_of? String
     return [] if str.empty?
-    serialize(
-      @torrents.map do |t|
-        begin
-          t if t.data.any? { |tt| tt.downcase.include? str.downcase }
-        rescue
-          nil
-        end
-      end.compact
-    )
+    @torrents.map do |t|
+      begin
+        t if t.data.any? { |tt| tt.downcase.include? str.downcase }
+      rescue
+        nil
+      end
+    end.compact
   end
 
   private
