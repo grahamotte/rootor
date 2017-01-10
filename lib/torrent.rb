@@ -1,6 +1,4 @@
 class Torrent
-  attr_accessor :data
-
   def initialize(data, queries)
     @data = data
     @queries = queries
@@ -12,7 +10,7 @@ class Torrent
 
   def serialize
     Hash[
-      data.each_with_index.map do |value, index|
+      @data.each_with_index.map do |value, index|
         [
           @queries.keys[index],
           mutate(@queries[@queries.keys[index]][:kind], value)

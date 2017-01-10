@@ -38,11 +38,10 @@ class Rootor
   end
 
   def find(str)
-    return [] unless str.instance_of? String
-    return [] if str.empty?
+    return [] if (str.empty? || !str.instance_of?(String))
     @torrents.map do |t|
       begin
-        t if t.data.any? { |tt| tt.downcase.include? str.downcase }
+        t if t.serialize.values.any? { |tt| tt.downcase.include? str.downcase }
       rescue
         nil
       end
