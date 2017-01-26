@@ -5,6 +5,10 @@ class Client < XMLRPC::Client
     end
   end
 
+  def load_start(bytes)
+    call('load.raw_start', '', bytes)
+  end
+
   private
 
   def render_queries(queries)

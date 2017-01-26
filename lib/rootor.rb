@@ -48,6 +48,14 @@ class Rootor
     end.compact
   end
 
+  def load_from_raw(data)
+    @client.load_start(XMLRPC::Base64.new(data))
+  end
+
+  def load_from_file(path)
+    load_from_raw(File.read(path))
+  end
+
   private
 
   def serialize(torrents)
