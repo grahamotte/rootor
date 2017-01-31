@@ -1,7 +1,7 @@
 class Client < XMLRPC::Client
-  def fetch(queries)
-    call_async('d.multicall', 'main', *render_queries(queries)).map do |t|
-      Torrent.new(t, queries)
+  def fetch(query_keys)
+    call_async('d.multicall', 'main', *render_queries(query_keys)).map do |t|
+      Torrent.new(Hash[query_keys.zip(t)])
     end
   end
 
@@ -11,7 +11,11 @@ class Client < XMLRPC::Client
 
   private
 
-  def render_queries(queries)
-    queries.map { |k, v| "d.#{v[:call]}=" }
+  def render_queries(query_keys)
+    slice(QUERIES, query_keys).map { |_, v| "d.#{v[:call]}=" }
+  end
+
+  def slice(hash, keys)
+    hash.select { |k, v| keys.include?(k) }
   end
 end
