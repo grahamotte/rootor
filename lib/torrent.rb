@@ -1,19 +1,18 @@
 class Torrent
-  def initialize(data, queries)
-    @data = data
-    @queries = queries
+  def initialize(raw_hash)
+    @raw_hash = raw_hash
     serialize.each do |k, v|
-      self.instance_variable_set "@#{k.to_s}", v
+      instance_variable_set "@#{k}", v
       self.class.__send__(:attr_accessor, k)
     end
   end
 
-  def serialize
+  def serialize(pretty: false)
     Hash[
-      @data.each_with_index.map do |value, index|
+      @raw_hash.map do |k, v|
         [
-          @queries.keys[index],
-          mutate(@queries[@queries.keys[index]][:kind], value)
+          k,
+          mutate(QUERIES[k][:kind], v, pretty: pretty)
         ]
       end
     ]
@@ -21,18 +20,20 @@ class Torrent
 
   private
 
-  def mutate(kase, data)
+  def mutate(kase, data, pretty:)
     case kase
-    when :file, :rate
-      Filesize.from("#{data} B")
-    when :date
-      Time.at(data)
-    when :ratio
-      data.to_f/1000
-    when :bool
-      !!data
-    else
-      data
+      when :file, :rate
+        filesize = Filesize.from("#{data} B")
+        pretty ? filesize.pretty : filesize
+      when :date
+        time = Time.at(data)
+        pretty ? time.to_s : time
+      when :ratio
+        data.to_f / 1000
+      when :bool
+        !!data
+      else
+        data
     end
   end
 end
