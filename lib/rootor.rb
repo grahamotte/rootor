@@ -7,13 +7,13 @@ require_relative 'queries'
 class Rootor
   attr_accessor :client, :torrents
 
-  def initialize(xmlrpc_url, query_keys = nil)
-    @query_keys = query_keys ? [:hash] + (query_keys - [:hash]) : QUERIES.keys
+  def initialize(xmlrpc_url, queries: nil)
+    @query_keys = queries ? [:hash] + (queries - [:hash]) : QUERIES.keys
     @client = Client.new2(xmlrpc_url)
-    @torrents = refresh
+    @torrents = refresh!
   end
 
-  def refresh
+  def refresh!
     @torrents = @client.fetch(@query_keys)
   end
 
@@ -21,13 +21,17 @@ class Rootor
     @torrents.map(&:serialize)
   end
 
+  QUERIES.keys.each do |key|
+    define_method("sort_by_#{key.to_s}") do
+      raise unless @query_keys.include?(key)
+      @torrents.sort_by { |t| t.send(key) }
+    end
+  end
+
   def find(str)
     return [] if str.empty? || !str.instance_of?(String)
     @torrents.map do |t|
-      begin
-        t if t.serialize.values.any? { |tt| tt.downcase.include? str.downcase }
-      rescue
-      end
+        t if t.serialize.values.any? { |tt| tt.downcase.include? str.downcase } rescue nil
     end.compact
   end
 

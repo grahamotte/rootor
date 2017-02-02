@@ -18,6 +18,10 @@ class Torrent
     ]
   end
 
+  def pretty_serialize
+    serialize(pretty: true)
+  end
+
   private
 
   def mutate(kase, data, pretty:)
