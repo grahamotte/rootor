@@ -7,25 +7,21 @@ require_relative 'queries'
 class Rootor
   attr_accessor :client, :torrents
 
-  def initialize(xmlrpc_url, queries: nil)
-    @query_keys = queries ? [:hash] + (queries - [:hash]) : QUERIES.keys
+  def initialize(xmlrpc_url)
     @client = Client.new2(xmlrpc_url)
     @torrents = refresh!
   end
 
   def refresh!
-    @torrents = @client.fetch(@query_keys)
+    @torrents = @client.fetch
   end
 
   def serialized_torrents
     @torrents.map(&:serialize)
   end
 
-  QUERIES.keys.each do |key|
-    define_method("sort_by_#{key.to_s}") do
-      raise unless @query_keys.include?(key)
-      @torrents.sort_by { |t| t.send(key) }
-    end
+  def pretty_serialized_torrents
+    @torrents.map(&:pretty_serialize)
   end
 
   def find(str)

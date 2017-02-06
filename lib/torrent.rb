@@ -12,7 +12,7 @@ class Torrent
       @raw_hash.map do |k, v|
         [
           k,
-          mutate(QUERIES[k][:kind], v, pretty: pretty)
+          mutate(FLAT_QUERIES[k][:kind], v, pretty: pretty)
         ]
       end
     ]
