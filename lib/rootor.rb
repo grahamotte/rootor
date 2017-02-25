@@ -8,7 +8,7 @@ class Rootor
   attr_accessor :client, :torrents
 
   def initialize(xmlrpc_url)
-    @client = Client.new2(xmlrpc_url)
+    @client   = Client.new2(xmlrpc_url)
     @torrents = refresh!
   end
 
@@ -27,7 +27,7 @@ class Rootor
   def find(str)
     return [] if str.empty? || !str.instance_of?(String)
     @torrents.map do |t|
-        t if t.serialize.values.any? { |tt| tt.downcase.include? str.downcase } rescue nil
+      t if t.serialize.values.any? { |tt| tt.downcase.include? str.downcase } rescue nil
     end.compact
   end
 

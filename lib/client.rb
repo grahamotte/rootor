@@ -5,7 +5,7 @@ class Client < XMLRPC::Client
     end
 
     t_commands = render_trackers_commands(d_objects.map { |d| d[:hash] })
-    t_objects = multicall_async(*t_commands).map do |r|
+    t_objects  = multicall_async(*t_commands).map do |r|
       Hash[QUERIES[:trackers].keys.zip(r.first)]
     end
 
