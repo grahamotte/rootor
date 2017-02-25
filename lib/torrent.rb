@@ -3,7 +3,7 @@ class Torrent
     @raw_hash = raw_hash
     serialize.each do |k, v|
       instance_variable_set "@#{k}", v
-      self.class.__send__(:attr_accessor, k)
+      self.class.__send__(:attr_reader, k)
     end
   end
 
