@@ -8,7 +8,7 @@ class Torrent
   end
 
   def serialize(pretty: false)
-    Hash[
+    serialized_queries = Hash[
       @raw_hash.map do |k, v|
         [
           k,
@@ -16,6 +16,12 @@ class Torrent
         ]
       end
     ]
+
+    serialized_queries.merge(
+      {
+        tracker: URI(serialized_queries[:tracker_url]).host
+      }
+    )
   end
 
   def pretty_serialize
