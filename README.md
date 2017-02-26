@@ -1,24 +1,31 @@
-Rootor is an `xmlrpc` rtorrent ruby frontend.
+Rootor is an `XMLRPC` client rtorrent ruby interface.
 ```bash
 gem install rootor
 ```
-
 
 ```ruby
 require 'rootor'
 
 r = Rootor.new('https://<user>:<password>@<server>:<port>/<xmlrpc>')
 
-puts r.torrents.length
+# get all your torrents
+r.torrents
 
+# make them more digestible
+r.torrents.serialize
+
+# find best one
+r.torrents.sort_by(&:ratio).last
+
+# add a new torrent
 r.load_from_file('<file.torrent>')
 ```
 
-Reference 
+Reference material
 ---
-https://github.com/mdevaev/emonoda/wiki/rTorrent-XMLRPC-Reference
+https://ruby-doc.org/stdlib-2.3.1/libdoc/xmlrpc/rdoc/XMLRPC/Client.html
 
-http://elektito.com/2016/02/10/rtorrent-xmlrpc/
+https://github.com/mdevaev/emonoda/wiki/rTorrent-XMLRPC-Reference
 
 https://github.com/rakshasa/rtorrent/wiki/rTorrent-0.9-Comprehensive-Command-list-(WIP)
 
